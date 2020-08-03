@@ -1,0 +1,137 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Sequence___Practice_2___Calculating_Loss_Invoices___Check_the_invoices_issued_to_bankruptcy_clients" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="1120.8,1754.4" sap2010:WorkflowViewState.IdRef="Sequence___Practice_2___Calculating_Loss_Invoices___Check_the_invoices_issued_to_bankruptcy_clients_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="23">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Excel</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="18">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Practice 2 Solution&#xD;&#xA;1. Use a 'Read Range' activity to read the .xlsx file and store it in a newly created DataTable variable (&quot;invoicesDT&quot;);&#xD;&#xA; 2. Use a 'Read CSV' activity to read the .csv file and store the content in a newly created DataTable variable (&quot;clientsDT&quot;)&#xD;&#xA; 3. Add a 'Join Data Tables' activity to bring together the data from both variables to a new one (&quot;resultsDT&quot;). Input Data Table 1 should be &quot;clientsDT&quot; and Input Data Table 2 should be &quot;invoicesDT&quot;. Use the &quot;Client Name&quot; columns in both DataTables as the Join criterion and the 'Left' Join Type (so that we keep only the invoices that were issued for clients in the second DataTable).&#xD;&#xA; 4. Check which invoices in &quot;resultsDT&quot; are issued to companies that are bankrupt, by using a 'Filter Data Table' activity. For this, select the 'Keep' radio button and use 'IsBankrupt' as the filtering criterion (value &quot;TRUE&quot;). You can use this activity to remove some of the columns that you don't need - go to the 'Output Columns' tab, check the 'Remove' button and write down the names of the columns you don't need (&quot;ClientName_1&quot; and &quot;ClientId&quot;)&#xD;&#xA; 5. To calculate the loss from the companies that are bankrupt, loop through the rows in the filtered Data Table and add the content of the “InvoiceValue” column, converted to Integer, t­­­o a variable in which we will store the sum - “totalLoss” of Integer type. Use a 'For Each Row' and an 'Assign' activity in the Body with the following method: totalLoss = totalLoss+Cint(row(&quot;InvoiceValue&quot;));&#xD;&#xA; 6. Write the filtered Data Table to a new Excel file using the 'Write Range' activity. Additionally, you can add the total loss information to a cell that is outside the main table, for example the H4 cell, using the 'Write Cell' activity.&#xD;&#xA;&#xD;&#xA;Download&#xD;&#xA;Download the workflow below to see the complete solution.&#xD;&#xA;&#xD;&#xA;Practice 2 - Calculating Loss Invoices (Workflow).zip&#xD;&#xA;14.9 KB" DisplayName="Sequence___Practice_2___Calculating_Loss_Invoices___Check_the_invoices_issued_to_bankruptcy_clients" sap:VirtualizedContainerService.HintSize="395.2,1589.6" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="sd:DataTable" Name="invoicesDT" />
+      <Variable x:TypeArguments="sd:DataTable" Name="clientsDT" />
+      <Variable x:TypeArguments="x:String" Name="clientDTstring" />
+      <Variable x:TypeArguments="sd:DataTable" Name="lossDT" />
+      <Variable x:TypeArguments="x:String" Name="lossDTstring" />
+      <Variable x:TypeArguments="x:Int32" Name="lossAmount">
+        <Variable.Default>
+          <Literal x:TypeArguments="x:Int32" />
+        </Variable.Default>
+      </Variable>
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:ReadRange AddHeaders="True" DataTable="[invoicesDT]" DisplayName="Read Range - Invoices bankruptcy" sap:VirtualizedContainerService.HintSize="353.6,88" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="Sheet1" WorkbookPath="D:\UIPath\From training site\Practice\Invoices bankruptcy.xlsx">
+      <ui:ReadRange.Range>
+        <InArgument x:TypeArguments="x:String">
+          <Literal x:TypeArguments="x:String" Value="" />
+        </InArgument>
+      </ui:ReadRange.Range>
+    </ui:ReadRange>
+    <ui:ReadCsvFile Encoding="{x:Null}" DataTable="[clientsDT]" Delimitator="Comma" DisplayName="Read CSV - Client bankruptcy" FilePath="D:\UIPath\From training site\Practice\Clients bankruptcy.csv" sap:VirtualizedContainerService.HintSize="353.6,155.2" sap2010:WorkflowViewState.IdRef="ReadCsvFile_1" />
+    <ui:FilterDataTable DataTable="[clientsDT]" DisplayName="Filter Data Table - clientsDT for True value" FilterRowsMode="Keep" sap:VirtualizedContainerService.HintSize="353.6,60" sap2010:WorkflowViewState.IdRef="FilterDataTable_1" OutputDataTable="[clientsDT]" SelectColumnsMode="Keep">
+      <ui:FilterDataTable.Filters>
+        <scg:List x:TypeArguments="ui:FilterOperationArgument" Capacity="4">
+          <ui:FilterOperationArgument BooleanOperator="And" Operator="EQ">
+            <ui:FilterOperationArgument.Column>
+              <InArgument x:TypeArguments="x:String">["IsBankrupt"]</InArgument>
+            </ui:FilterOperationArgument.Column>
+            <ui:FilterOperationArgument.Operand>
+              <InArgument x:TypeArguments="x:String">["TRUE"]</InArgument>
+            </ui:FilterOperationArgument.Operand>
+          </ui:FilterOperationArgument>
+        </scg:List>
+      </ui:FilterDataTable.Filters>
+      <ui:FilterDataTable.SelectColumns>
+        <scg:List x:TypeArguments="InArgument" Capacity="4">
+          <x:Null />
+        </scg:List>
+      </ui:FilterDataTable.SelectColumns>
+    </ui:FilterDataTable>
+    <ui:JoinDataTables DataTable1="[clientsDT]" DataTable2="[invoicesDT]" DisplayName="Join Data Tables - inner" sap:VirtualizedContainerService.HintSize="353.6,60" sap2010:WorkflowViewState.IdRef="JoinDataTables_1" JoinType="Inner" OutputDataTable="[lossDT]">
+      <ui:JoinDataTables.Arguments>
+        <scg:List x:TypeArguments="ui:JoinOperationArgument" Capacity="4">
+          <ui:JoinOperationArgument Operand="{x:Null}" BooleanOperator="And" Operator="EQ">
+            <ui:JoinOperationArgument.Column1>
+              <InArgument x:TypeArguments="x:String">["ClientName"]</InArgument>
+            </ui:JoinOperationArgument.Column1>
+            <ui:JoinOperationArgument.Column2>
+              <InArgument x:TypeArguments="x:String">["ClientName"]</InArgument>
+            </ui:JoinOperationArgument.Column2>
+          </ui:JoinOperationArgument>
+        </scg:List>
+      </ui:JoinDataTables.Arguments>
+    </ui:JoinDataTables>
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[lossDT]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="353.6,301.6" sap2010:WorkflowViewState.IdRef="ForEachRow_1">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="304,152.8" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Int32">[lossAmount]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Int32">[lossAmount+Integer.Parse(row(5).ToString)]</InArgument>
+              </Assign.Value>
+            </Assign>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+    </ui:ForEachRow>
+    <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="353.6,60" sap2010:WorkflowViewState.IdRef="MessageBox_2" Text="[&quot;Total Loss is : &quot;+lossAmount.ToString]" />
+  </Sequence>
+</Activity>

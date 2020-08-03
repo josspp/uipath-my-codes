@@ -1,0 +1,97 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Sequence___Using_string_methods_to_extract_specific_pieces_of_text_and_display_them_in_a_different_format" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="389.6,850.4" sap2010:WorkflowViewState.IdRef="Sequence___Using_string_methods_to_extract_specific_pieces_of_text_and_display_them_in_a_different_format_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Let's recap the Activities and Methods used&#xD;&#xA;We started the project as a Sequence and used an Assign for the initial value of the “message” String variable: &quot;You searched for author Mark Twain. His books can be found in the following stores: Bookland, Classics bookstore.&quot;&#xD;&#xA;We created a new String variable (“author”) and used a succession of String methods to assign the author from the query: message.Split(&quot;.&quot;c).First.ToString.Substring(message.LastIndexOf(&quot;author&quot;)):&#xD;&#xA;v Split(&quot;.&quot;c).First.ToString extracts the first sentence of the String and converts it to a String;&#xD;&#xA;v Substring(message.LastIndexOf(&quot;author&quot;)) extracts the Substring that is after “author”;&#xD;&#xA;We created a new List variable (“bookstores”) and used a succession of String methods to assign the bookstores from the query: message.Split(&quot;.&quot;c)(1).ToString.Split(&quot;:&quot;c).Last.ToString.Split(&quot;,&quot;c).ToList&#xD;&#xA;v message.Split(&quot;.&quot;c)(1).ToString extracts the second sentence of the String and converts it to a String;&#xD;&#xA;v Split(&quot;:&quot;c).Last.ToString splits the remaining String and keeps only the last part of it;&#xD;&#xA;v Split(&quot;,&quot;c).ToList takes each string separated by comma and adds it as an element in the List variable;&#xD;&#xA;We created a new String variable to display the values of the 2 variables: String.Format(&quot;Availability for {0}: {1}&quot;, author ,String.Join(&quot;;&quot;+vbCr,bookstores)). In this expression, String.Join is used to extract each element in the “bookstores” List variable and display them. vbCr is used to go on a new row for each element (similar to Environment.NewLine)" DisplayName="Sequence___Using_string_methods_to_extract_specific_pieces_of_text_and_display_them_in_a_different_format" sap:VirtualizedContainerService.HintSize="375.2,685.6" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="message" />
+      <Variable x:TypeArguments="x:String" Name="author" />
+      <Variable x:TypeArguments="scg:List(x:String)" Name="bookstores" />
+      <Variable x:TypeArguments="x:String" Name="outputstring" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Assign DisplayName="Assign - Initial string to split for data" sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[message]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">You searched for author Mark Twain. His books can be found in the following stores: Bookland, Classics bookstore.</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign - get author name from string" sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_2">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[author]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[message.Split("."c).First.ToString.Substring(message.LastIndexOf("author"))]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign DisplayName="Assign - get bookstores names in list" sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_3">
+      <Assign.To>
+        <OutArgument x:TypeArguments="scg:List(x:String)">[bookstores]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="scg:List(x:String)">[message.Split(":"c).Last.ToString.Split(","c).ToList]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <Assign sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="Assign_4">
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[outputstring]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[String.Format("Availability for {0}: {1}",author,string.Join("."+vbcr,bookstores))]</InArgument>
+      </Assign.Value>
+    </Assign>
+    <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="MessageBox_2" Text="[outputstring]" />
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="333.6,92.8" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[outputstring]" />
+  </Sequence>
+</Activity>
