@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Acme_library_testing" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="1092,614.4" sap2010:WorkflowViewState.IdRef="Acme_library_testing_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:a="clr-namespace:AcmeLibrary;assembly=AcmeLibrary" xmlns:ad="clr-namespace:AcmeLibrary.Download_workitems;assembly=AcmeLibrary" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ss="clr-namespace:System.Security;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Acme_library_testing" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="1092,966.4" sap2010:WorkflowViewState.IdRef="Acme_library_testing_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:a="clr-namespace:AcmeLibrary;assembly=AcmeLibrary" xmlns:ad="clr-namespace:AcmeLibrary.Download_workitems;assembly=AcmeLibrary" xmlns:ad1="clr-namespace:AcmeLibrary.Download_all_invoices;assembly=AcmeLibrary" xmlns:ad2="clr-namespace:AcmeLibrary.Download_invoices_of_specific_tax_id;assembly=AcmeLibrary" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ss="clr-namespace:System.Security;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="24">
       <x:String>System.Activities</x:String>
@@ -28,7 +28,7 @@
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="17">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="44">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -46,22 +46,76 @@
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
       <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.CV</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities.Design</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="Acme_library_testing" sap:VirtualizedContainerService.HintSize="241.6,302.4" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence DisplayName="Acme_library_testing" sap:VirtualizedContainerService.HintSize="538.4,761.6" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="ss:SecureString" Name="ppass" />
       <Variable x:TypeArguments="x:String" Name="uuserName" />
       <Variable x:TypeArguments="sd:DataTable" Name="DTworkItems" />
+      <Variable x:TypeArguments="x:String" Name="taxID" />
+      <Variable x:TypeArguments="x:String" Name="selectedAction" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:GetSecureCredential CredentialType="Generic" DisplayName="Get secure credential" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="GetSecureCredential_1" Password="[ppass]" PersistanceType="LocalComputer" Target="acme" Username="[uuserName]" />
-    <a:Login sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Login_1" passArg="[ppass]" userNameArg="[uuserName]" />
-    <ad:Download_work_items_from_acme DTArg="[DTworkItems]" DisplayName="Download work items from acme" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Download_work_items_from_acme_1" />
-    <a:Logout sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Logout_1" />
+    <ui:InputDialog Title="{x:Null}" DisplayName="Input Dialog" sap:VirtualizedContainerService.HintSize="496.8,92.8" sap2010:WorkflowViewState.IdRef="InputDialog_1" IsPassword="False" Label="Please select an action to be done">
+      <ui:InputDialog.Options>
+        <InArgument x:TypeArguments="s:String[]">
+          <mva:VisualBasicValue x:TypeArguments="s:String[]" ExpressionText="{}{&quot;Download all work items&quot;,&quot;Download all invoices&quot;,&quot;Download only the invoices that belong to a certain tax ID&quot;}" sap2010:WorkflowViewState.IdRef="VisualBasicValue`1_2" />
+        </InArgument>
+      </ui:InputDialog.Options>
+      <ui:InputDialog.Result>
+        <OutArgument x:TypeArguments="x:String">
+          <mva:VisualBasicReference x:TypeArguments="x:String" ExpressionText="selectedAction" sap2010:WorkflowViewState.IdRef="VisualBasicReference`1_1" />
+        </OutArgument>
+      </ui:InputDialog.Result>
+    </ui:InputDialog>
+    <Switch x:TypeArguments="x:String" DisplayName="Switch" Expression="[selectedAction.ToLower]" sap:VirtualizedContainerService.HintSize="496.8,536" sap2010:WorkflowViewState.IdRef="Switch`1_1">
+      <Switch.Default>
+        <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="333.6,60" sap2010:WorkflowViewState.IdRef="MessageBox_3" Text="[&quot;Nothing is found selected&quot;]" />
+      </Switch.Default>
+      <Sequence x:Key="download all work items" sap:VirtualizedContainerService.HintSize="241.6,302.4" sap2010:WorkflowViewState.IdRef="Sequence_8">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <ui:GetSecureCredential CredentialType="Generic" DisplayName="Get secure credential" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="GetSecureCredential_6" Password="[ppass]" PersistanceType="LocalComputer" Target="acme" Username="[uuserName]" />
+        <a:Login sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Login_6" passArg="[ppass]" userNameArg="[uuserName]" />
+        <ad:Download_work_items_from_acme DisplayName="Download work items from acme" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Download_work_items_from_acme_3" />
+        <a:Logout sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Logout_6" />
+      </Sequence>
+      <Sequence x:Key="download all invoices" sap:VirtualizedContainerService.HintSize="241.6,302.4" sap2010:WorkflowViewState.IdRef="Sequence_9">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <ui:GetSecureCredential CredentialType="Generic" DisplayName="Get secure credential" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="GetSecureCredential_7" Password="[ppass]" PersistanceType="LocalComputer" Target="acme" Username="[uuserName]" />
+        <a:Login sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Login_7" passArg="[ppass]" userNameArg="[uuserName]" />
+        <ad1:Download_all_invoices DisplayName="Download all invoices" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Download_all_invoices_3" />
+        <a:Logout sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Logout_7" />
+      </Sequence>
+      <Sequence x:Key="download only the invoices that belong to a certain tax id" sap:VirtualizedContainerService.HintSize="241.6,302.4" sap2010:WorkflowViewState.IdRef="Sequence_10">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <ui:GetSecureCredential CredentialType="Generic" DisplayName="Get secure credential" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="GetSecureCredential_8" Password="[ppass]" PersistanceType="LocalComputer" Target="acme" Username="[uuserName]" />
+        <a:Login sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Login_8" passArg="[ppass]" userNameArg="[uuserName]" />
+        <ad2:download_invoices_with_tax_id taxIdArg="{x:Null}" DisplayName="download invoices with tax id" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="download_invoices_with_tax_id_4" />
+        <a:Logout sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="Logout_8" />
+      </Sequence>
+    </Switch>
   </Sequence>
 </Activity>
