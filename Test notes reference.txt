@@ -1,80 +1,214 @@
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
-namespace SeleniumTest
+// Abstract class
+public abstract class Flight
 {
-    internal class SeleniumFormElements
+    public string FlightNumber { get; set; }
+    public string Destination { get; set; }
+    public decimal BaseFare { get; set; }
+
+    public abstract decimal CalculateFare();
+    public abstract void DisplayDetails();
+}
+
+// DomesticFlight class
+public class DomesticFlight : Flight
+{
+    public override decimal CalculateFare() => BaseFare * 1.1m; // Example fare calculation
+
+    public override void DisplayDetails()
     {
-        public static void Main()
+        Console.WriteLine($"Domestic Flight: {FlightNumber}, Destination: {Destination}, Fare: {CalculateFare()}");
+    }
+}
+
+// InternationalFlight class
+public class InternationalFlight : Flight
+{
+    public override decimal CalculateFare() => BaseFare * 1.5m; // Example fare calculation
+
+    public override void DisplayDetails()
+    {
+        Console.WriteLine($"International Flight: {FlightNumber}, Destination: {Destination}, Fare: {CalculateFare()}");
+    }
+}
+
+// Interface for booking
+public interface IBooking
+{
+    void BookTicket(Flight flight, Passenger passenger);
+    void CancelBooking(int bookingId);
+    Booking GetBookingDetails(int bookingId);
+}
+
+// Booking class
+public class Booking
+{
+    public int BookingId { get; set; }
+    public Flight Flight { get; set; }
+    public Passenger Passenger { get; set; }
+}
+
+// Passenger class
+public class Passenger
+{
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
+}
+
+// Booking manager
+public class BookingManager : IBooking
+{
+    private List<Booking> bookings = new List<Booking>();
+    private int bookingCounter = 0;
+
+    public void BookTicket(Flight flight, Passenger passenger)
+    {
+        var booking = new Booking
         {
-            // Initialize the ChromeDriver
-            IWebDriver driver = new ChromeDriver();
-            
-            try
-            {
-                // Navigate to Sauce Demo
-                driver.Navigate().GoToUrl("https://www.saucedemo.com/");
-                driver.Manage().Window.Maximize();
-                
-                // Enter username and password
-                IWebElement usernameField = driver.FindElement(By.Id("user-name"));
-                IWebElement passwordField = driver.FindElement(By.Id("password"));
-                IWebElement loginButton = driver.FindElement(By.Id("login-button"));
+            BookingId = ++bookingCounter,
+            Flight = flight,
+            Passenger = passenger
+        };
+        bookings.Add(booking);
+        Console.WriteLine($"Ticket booked: ID = {booking.BookingId}");
+    }
 
-                usernameField.SendKeys("standard_user");
-                passwordField.SendKeys("secret_sauce");
-                loginButton.Click();
-                
-                // Wait for page to load
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-
-                // Click the first product's "Add to cart" button
-                IWebElement addToCartButton = driver.FindElement(By.CssSelector(".btn_primary"));
-                addToCartButton.Click();
-                
-                // Go to the cart
-                IWebElement cartButton = driver.FindElement(By.ClassName("shopping_cart_link"));
-                cartButton.Click();
-                
-                // Proceed to checkout
-                IWebElement checkoutButton = driver.FindElement(By.Id("checkout"));
-                checkoutButton.Click();
-                
-                // Fill out checkout information
-                IWebElement firstNameField = driver.FindElement(By.Id("first-name"));
-                IWebElement lastNameField = driver.FindElement(By.Id("last-name"));
-                IWebElement postalCodeField = driver.FindElement(By.Id("postal-code"));
-                IWebElement continueButton = driver.FindElement(By.Id("continue"));
-                
-                firstNameField.SendKeys("John");
-                lastNameField.SendKeys("Doe");
-                postalCodeField.SendKeys("12345");
-                continueButton.Click();
-                
-                // Finalize the order
-                IWebElement finishButton = driver.FindElement(By.Id("finish"));
-                finishButton.Click();
-                
-                // Verify "Thank you for your order" message
-                IWebElement thankYouMessage = driver.FindElement(By.ClassName("complete-header"));
-                string messageText = thankYouMessage.Text;
-
-                // Print the message to console
-                Console.WriteLine("========Order Confirmation Message=========");
-                Console.WriteLine(messageText);
-                Console.WriteLine("==============END==========================");
-            }
-            catch (NoSuchElementException ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
-            finally
-            {
-                // Close the browser
-                driver.Quit();
-            }
+    public void CancelBooking(int bookingId)
+    {
+        var booking = bookings.FirstOrDefault(b => b.BookingId == bookingId);
+        if (booking != null)
+        {
+            bookings.Remove(booking);
+            Console.WriteLine($"Booking ID {bookingId} canceled.");
+        }
+        else
+        {
+            Console.WriteLine($"Booking ID {bookingId} not found.");
         }
     }
+
+    public Booking GetBookingDetails(int bookingId)
+    {
+        return bookings.FirstOrDefault(b => b.BookingId == bookingId);
+    }
+}
+
+public class Program
+{
+    private static List<Flight> flightList = new List<Flight>();
+    private static BookingManager bookingManager = new BookingManager();
+    private const string csvFilePath = "flights.csv";
+
+    public static void Main()
+    {
+        LoadFlightsFromCsv(csvFilePath);
+        
+        // Display flights
+        Console.WriteLine("Available Flights:");
+        foreach (var flight in flightList)
+        {
+            flight.DisplayDetails();
+        }
+
+        // Book a ticket
+        var passenger = new Passenger { Name = "John Doe", Email = "john@example.com", Phone = "123-456-7890" };
+        bookingManager.BookTicket(flightList[0], passenger);
+
+        // LINQ queries
+        var filteredFlights = flightList.Where(f => f.Destination == "London").ToList();
+        var sortedFlights = flightList.OrderBy(f => f.CalculateFare()).ToList();
+        var groupedFlights = flightList.GroupBy(f => f is DomesticFlight ? "Domestic" : "International");
+
+        Console.WriteLine("\nFiltered Flights (Destination: London):");
+        foreach (var flight in filteredFlights)
+        {
+            flight.DisplayDetails();
+        }
+
+        Console.WriteLine("\nSorted Flights by Fare:");
+        foreach (var flight in sortedFlights)
+        {
+            flight.DisplayDetails();
+        }
+
+        Console.WriteLine("\nGrouped Flights:");
+        foreach (var group in groupedFlights)
+        {
+            Console.WriteLine($"{group.Key} Flights:");
+            foreach (var flight in group)
+            {
+                flight.DisplayDetails();
+            }
+        }
+
+        // Save updated flights to CSV
+        SaveFlightsToCsv(csvFilePath);
+    }
+
+    // CSV reading method
+    public static void LoadFlightsFromCsv(string filePath)
+    {
+        try
+        {
+            if (File.Exists(filePath))
+            {
+                var lines = File.ReadAllLines(filePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+                    if (parts.Length == 3)
+                    {
+                        var flightNumber = parts[0];
+                        var destination = parts[1];
+                        if (decimal.TryParse(parts[2], out var baseFare))
+                        {
+                            Flight flight = flightNumber.StartsWith("FL") 
+                                ? new DomesticFlight { FlightNumber = flightNumber, Destination = destination, BaseFare = baseFare } 
+                                : new InternationalFlight { FlightNumber = flightNumber, Destination = destination, BaseFare = baseFare };
+                            flightList.Add(flight);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"File not found: {filePath}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading file: {ex.Message}");
+        }
+    }
+
+    // CSV writing method
+    public static void SaveFlightsToCsv(string filePath)
+    {
+        try
+        {
+            using (var writer = new StreamWriter(filePath))
+            {
+                foreach (var flight in flightList)
+                {
+                    writer.WriteLine($"{flight.FlightNumber},{flight.Destination},{flight.BaseFare}");
+                }
+            }
+            Console.WriteLine($"Flight data saved to: {filePath}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error writing to file: {ex.Message}");
+        }
+    }
+
+    // Regex validation methods
+    public static bool ValidateFlightNumber(string flightNumber) => Regex.IsMatch(flightNumber, @"^FL\d{4}$");
+    public static bool ValidateEmail(string email) => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+    public static bool ValidatePhone(string phone) => Regex.IsMatch(phone, @"^\d{3}-\d{3}-\d{4}$");
 }
